@@ -14,6 +14,6 @@ Este proyecto actualmente utiliza:
 
 - **Python 3.13.4** – Lenguaje principal
 
-# Como ejecutar:
+## Como ejecutar:
 desde la raiz del proyecto: python -m app.app
 
