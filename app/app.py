@@ -1,5 +1,4 @@
 from services.simplex_methods import SimplexSimple
-from utils.helpers import print_tableau
 import numpy as np
 
 def main():
@@ -9,7 +8,6 @@ def main():
     # 2x1 + 3x2 <= 8
     # 2x1 + x2  <= 4
     # x1, x2 >= 0
-    import numpy as np
 
     c = np.array([3, 5], dtype=float)
     A = np.array([[2, 3],
