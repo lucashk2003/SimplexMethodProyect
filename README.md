@@ -34,11 +34,17 @@ Sujeto a:
 > x1, x2 ≥ 0  
 
 Entradas en el programa:
+
 Ingrese el número de variables de decisión: 2
+
 Ingrese el número de restricciones: 2
+
 ¿Es un problema de maximización? (s/n): s
+
 Ingrese los coeficientes de la función objetivo: 3 5
+
 Restricción 1: 2 3 <= 8
+
 Restricción 2: 2 1 <= 4
 
 
