@@ -17,13 +17,11 @@ Este proyecto actualmente utiliza:
 ## Como ejecutar:
 desde la raiz del proyecto: python -m app.app
 
-# Programa para resolver problemas de Programación Lineal (Método Simplex)
-
-## Uso
-
 Ejecutar el programa e ingresar los datos solicitados por consola.
 
 ### Ejemplo
+Ejecutar el programa e ingresar los datos solicitados por consola.
+
 
 Maximizar:
 > Z = 3x1 + 5x2
@@ -43,10 +41,22 @@ Ingrese el número de restricciones: 2
 
 Ingrese los coeficientes de la función objetivo: 3 5
 
+Coeficientes de A (separados por espacios): 2 3
+
+Tipo de restricción (<=, >=, =): <=
+
+Valor de b: 8
+
+Coeficientes de A (separados por espacios): 2 1
+
+Tipo de restricción (<=, >=, =): <=
+
+Valor de b: 4
+
+
 Restricción 1: 2 3 <= 8
 
 Restricción 2: 2 1 <= 4
-
 
 Resultado esperado:
 > x1 = 0, x2 = 8/3  
