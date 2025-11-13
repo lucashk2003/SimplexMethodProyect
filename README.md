@@ -17,8 +17,6 @@ Este proyecto actualmente utiliza:
 ## Como ejecutar:
 desde la raiz del proyecto: python -m app.app
 
-Ejecutar el programa e ingresar los datos solicitados por consola.
-
 ### Ejemplo
 Ejecutar el programa e ingresar los datos solicitados por consola.
 
