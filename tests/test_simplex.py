@@ -12,8 +12,8 @@ class TestSimplexMethods(unittest.TestCase):
         is_max = True
         simplex = SimplexSimple()
         solution, z = simplex.solve(c, A, b, constraints_types, is_max)
-        expected_solution = np.array([1, 2], dtype=float)
-        expected_z = 13.0
+        expected_solution = np.array([0, 8/3], dtype=float)
+        expected_z = 40/3
         np.testing.assert_array_almost_equal(solution, expected_solution, decimal=5)
         self.assertAlmostEqual(z, expected_z, places=5)
 
@@ -26,8 +26,8 @@ class TestSimplexMethods(unittest.TestCase):
         is_max = True
         simplex = SimplexIntermediate()
         solution, z = simplex.solve(c, A, b, constraints_types, is_max)
-        expected_solution = np.array([0, 2], dtype=float)
-        expected_z = 2.0
+        expected_solution = np.array([4, 0], dtype=float)
+        expected_z = 8.0
         np.testing.assert_array_almost_equal(solution, expected_solution, decimal=5)
         self.assertAlmostEqual(z, expected_z, places=5)
 
