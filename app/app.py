@@ -1,4 +1,4 @@
-from services.simplex_methods import SimplexSimple
+from services.simplex_methods import SimplexSimple, SimplexAdvanced
 from utils.helpers import print_tableau
 import numpy as np
 
@@ -180,9 +180,10 @@ def main():
         tipo = solicitar_tipo_restriccion()
         constraints_types.append(tipo)  # ✅ Guardar cada tipo
         
-        if tipo != '<=':
-            print("   ⚠️  Advertencia: Esta versión solo maneja restricciones <=")
-            print("      La restricción se tratará como <=")
+        # Eliminar si las linea comentadas a continuacion si no generan inconvenientes
+        #if tipo != '<=':
+        #    print("   ⚠️  Advertencia: Esta versión solo maneja restricciones <=")
+        #    print("      La restricción se tratará como <=")
         
         # Lado derecho (b)
         b[i] = solicitar_float(f"  Valor del lado derecho (b{i+1}): ")
@@ -198,7 +199,8 @@ def main():
     print("="*60 + "\n")
     
     try:
-        simplex = SimplexSimple()
+        # simplex = SimplexSimple()
+        simplex = SimplexAdvanced()
         solution, z = simplex.solve(c, A, b, constraints_types, es_maximizacion)
         
         # Mostrar resultados
