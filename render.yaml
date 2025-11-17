@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: simplex-method
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app.app:app
+    envVars:
+      PYTHON_VERSION: 3.11
