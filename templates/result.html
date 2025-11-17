@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado Simplex</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <div class="max-w-2xl mx-auto bg-white shadow-xl rounded-xl p-6 md:p-10">
+        <h1 class="text-3xl font-bold text-center mb-6 border-b pb-3 
+            {% if success %} text-green-700 {% else %} text-red-700 {% endif %}">
+            {% if success %} ✅ Solución Encontrada {% else %} ❌ Error de Solución {% endif %}
+        </h1>
+
+        <div class="space-y-6">
+            {% if success %}
+                <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <h2 class="text-xl font-semibold text-green-800 mb-3">Valor Óptimo de Z ({{ objective }})</h2>
+                    <p class="text-4xl font-extrabold text-green-900">{{ "{:.4f}".format(z_value) }}</p>
+                </div>
+                
+                <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+                    <h2 class="text-xl font-semibold text-indigo-800 mb-3">Valores de las Variables de Decisión</h2>
+                    <ul class="grid grid-cols-2 gap-4">
+                        {% for var, val in solution_data.items() %}
+                            <li class="p-3 bg-white rounded-md shadow-sm border border-gray-200">
+                                <span class="font-bold text-gray-700">{{ var }}</span>: 
+                                <span class="font-mono text-lg text-indigo-600">{{ "{:.4f}".format(val) }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <p class="mt-6 text-sm text-gray-600 italic text-center">
+                    Método utilizado automáticamente: <span class="font-semibold text-indigo-700">{{ method_used }}</span>
+                </p>
+
+            {% else %}
+                <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                    <h2 class="text-xl font-semibold text-red-800 mb-3">Detalle del Error</h2>
+                    <p class="text-red-700 font-mono">{{ error_message }}</p>
+                </div>
+                <p class="text-center text-gray-600 mt-6">
+                    Por favor, verifique sus datos de entrada. El problema podría ser infactible o no acotado.
+                </p>
+            {% endif %}
+        </div>
+
+        <div class="mt-8 pt-4 border-t text-center">
+            <a href="/" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                ← Resolver Otro Problema
+            </a>
+        </div>
+    </div>
+</body>
+</html>

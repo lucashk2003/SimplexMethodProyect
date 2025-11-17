@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Simplex - PL</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
+        /* Estilo para los inputs de tipo matriz */
+        textarea.matrix-input { resize: vertical; min-height: 100px; }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl p-6 md:p-10">
+        <h1 class="text-3xl font-bold text-center text-indigo-700 mb-6 border-b pb-3">
+            Simplex Project v1.0.0
+        </h1>
+        <p class="text-center text-gray-600 mb-8">
+            Resuelve problemas de Programación Lineal. El método Simplex (Simple o Avanzado) se elige automáticamente.
+        </p>
+
+        <form action="/solve" method="post" class="space-y-6">
+            <!-- FUNCIÓN OBJETIVO -->
+            <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+                <label class="block text-lg font-semibold text-indigo-800 mb-2">1. Objetivo de la Función Z</label>
+                <div class="flex space-x-4">
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="objective" value="max" checked class="form-radio h-5 w-5 text-indigo-600">
+                        <span class="ml-2 text-gray-700">Maximizar</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="radio" name="objective" value="min" class="form-radio h-5 w-5 text-indigo-600">
+                        <span class="ml-2 text-gray-700">Minimizar</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- DIMENSIONES DEL PROBLEMA -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="num_vars" class="block text-sm font-medium text-gray-700">2. Número de Variables (n)</label>
+                    <input type="number" name="num_vars" id="num_vars" required min="1" value="2" 
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                </div>
+                <div>
+                    <label for="num_restr" class="block text-sm font-medium text-gray-700">3. Número de Restricciones (m)</label>
+                    <input type="number" name="num_restr" id="num_restr" required min="1" value="2" 
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                </div>
+            </div>
+
+            <!-- COEFICIENTES DE ENTRADA -->
+            <div class="space-y-6 bg-gray-50 p-5 rounded-lg border">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">4. Datos del Problema (Separar por espacios o comas)</h2>
+                
+                <!-- Coeficientes Z -->
+                <div>
+                    <label for="c" class="block text-sm font-medium text-gray-700">
+                        Coeficientes de Z (Vector **c**): <span class="text-xs text-indigo-500">(Ej: 3 5)</span>
+                    </label>
+                    <input type="text" name="c" id="c" required placeholder="3, 5, -1..."
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                </div>
+
+                <!-- Matriz A -->
+                <div>
+                    <label for="A" class="block text-sm font-medium text-gray-700">
+                        Matriz de Restricciones (**A**): <span class="text-xs text-indigo-500">(Ej: 2 3, 2 1 - **separar filas con coma**)</span>
+                    </label>
+                    <textarea name="A" id="A" required placeholder="2 3, 2 1, ..." 
+                              class="matrix-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"></textarea>
+                </div>
+
+                <!-- Tipos de Restricción -->
+                <div>
+                    <label for="constraints_types" class="block text-sm font-medium text-gray-700">
+                        Tipos de Restricción: <span class="text-xs text-indigo-500">(Ej: <=, >=, =)</span>
+                    </label>
+                    <input type="text" name="constraints_types" id="constraints_types" required placeholder="<=, >=, =, ..."
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                </div>
+                
+                <!-- Vector b -->
+                <div>
+                    <label for="b" class="block text-sm font-medium text-gray-700">
+                        Lado Derecho (Vector **b**): <span class="text-xs text-indigo-500">(Ej: 8 4)</span>
+                    </label>
+                    <input type="text" name="b" id="b" required placeholder="8, 4, 10..."
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                </div>
+            </div>
+
+            <!-- BOTÓN DE ENVÍO -->
+            <div class="pt-4">
+                <button type="submit" 
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
+                    Resolver Simplex
+                </button>
+            </div>
+        </form>
+        <div class="mt-8 pt-4 text-center text-sm text-gray-500 border-t">
+            *Versión 0.3.0 - Soporte para Maximización y Minimización.
+        </div>
+    </div>
+</body>
+</html>
