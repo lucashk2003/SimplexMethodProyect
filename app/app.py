@@ -1,14 +1,17 @@
 from services.simplex_methods import SimplexSimple, SimplexAdvanced
-from utils.helpers import print_tableau
+from utils.helpers import print_tableau # Importar print_tableau para usarlo en caso de que lo necesite en el futuro.
 import numpy as np
+
+# Constante de tolerancia para comparaciones de punto flotante
+TOLERANCE = 1e-9
 
 def solicitar_entero(mensaje):
     """
     Solicita un número entero al usuario con validación.
-    
+
     Args:
         mensaje (str): Mensaje a mostrar al usuario
-        
+
     Returns:
         int: Número entero ingresado correctamente
     """
@@ -25,10 +28,10 @@ def solicitar_entero(mensaje):
 def solicitar_si_no(mensaje):
     """
     Solicita respuesta sí/no al usuario con validación.
-    
+
     Args:
         mensaje (str): Pregunta a mostrar
-        
+
     Returns:
         bool: True si responde 's', False si responde 'n'
     """
@@ -36,189 +39,183 @@ def solicitar_si_no(mensaje):
         respuesta = input(mensaje).strip().lower()
         if respuesta in ['s', 'si', 'sí']:
             return True
-        elif respuesta in ['n', 'no']:
+        elif respuesta in ['n', 'no']:\
             return False
         else:
             print("❌ Error: Responda 's' para sí o 'n' para no")
 
+def solicitar_float(mensaje):
+    """
+    Solicita un número de punto flotante al usuario con validación.
+
+    Args:
+        mensaje (str): Mensaje a mostrar al usuario
+
+    Returns:
+        float: Número flotante ingresado
+    """
+    while True:
+        try:
+            return float(input(mensaje))
+        except ValueError:
+            print("❌ Error: Debe ingresar un número válido")
+
 def solicitar_array(mensaje, longitud_esperada, nombre_variable):
     """
     Solicita un array de números al usuario con validación.
-    
-    Args:
-        mensaje (str): Mensaje a mostrar
-        longitud_esperada (int): Cantidad de números esperados
-        nombre_variable (str): Nombre descriptivo para mensajes de error
-        
-    Returns:
-        np.array: Array de floats con los valores ingresados
-    """
-    while True:
-        try:
-            # Obtener entrada del usuario
-            entrada = input(mensaje).strip()
-            
-            # Validar que no esté vacío
-            if not entrada:
-                print(f"❌ Error: Debe ingresar {longitud_esperada} números")
-                print(f"   Formato correcto: número1 número2 ... (separados por espacios)")
-                continue
-            
-            # Validar que no use comas
-            if ',' in entrada:
-                print(f"❌ Error: No use comas para separar los números")
-                print(f"   Use ESPACIOS. Ejemplo: 3 5 2")
-                continue
-            
-            # Intentar convertir a array de floats
-            valores = list(map(float, entrada.split()))
-            
-            # Validar longitud
-            if len(valores) != longitud_esperada:
-                print(f"❌ Error: Se esperaban {longitud_esperada} números, pero ingresó {len(valores)}")
-                print(f"   Variable: {nombre_variable}")
-                continue
-            
-            # Todo OK, retornar array
-            return np.array(valores, dtype=float)
-            
-        except ValueError:
-            print(f"❌ Error: Todos los valores deben ser números válidos")
-            print(f"   Asegúrese de ingresar solo números separados por espacios")
-            print(f"   Ejemplo correcto: 2.5 3 1.8")
 
-def solicitar_tipo_restriccion():
-    """
-    Solicita el tipo de restricción con validación.
-    
-    Returns:
-        str: Tipo de restricción ('<=', '>=', o '=')
-    """
-    while True:
-        tipo = input("Tipo de restricción (<=, >=, =): ").strip()
-        if tipo in ['<=', '>=', '=']:
-            return tipo
-        else:
-            print("❌ Error: Tipo de restricción inválido")
-            print("   Opciones válidas: <=  >=  =")
-
-def solicitar_float(mensaje):
-    """
-    Solicita un número decimal al usuario con validación.
-    
     Args:
-        mensaje (str): Mensaje a mostrar
-        
+        mensaje (str): Mensaje a mostrar al usuario
+        longitud_esperada (int): Número de elementos esperados
+        nombre_variable (str): Nombre de la variable (ej: 'c', 'A') para mensajes
+
     Returns:
-        float: Número ingresado correctamente
+        np.array: Array de números flotantes
     """
     while True:
+        entrada = input(mensaje).replace(',', ' ').split()
+        if len(entrada) != longitud_esperada:
+            print(f"❌ Error: Debe ingresar {longitud_esperada} valores para {nombre_variable}.")
+            continue
         try:
-            valor = float(input(mensaje))
-            return valor
+            return np.array([float(x) for x in entrada], dtype=float)
         except ValueError:
-            print("❌ Error: Debe ingresar un número válido (entero o decimal)")
+            print("❌ Error: Todos los valores deben ser números válidos.")
 
 def main():
     """
-    Función principal que solicita datos del problema de programación lineal
-    y resuelve usando el método Simplex.
+    Función principal de la aplicación.
+    Recoge datos del usuario y resuelve el problema de programación lineal.
     """
     print("\n" + "="*60)
-    print("  MÉTODO SIMPLEX - Resolución de Problemas de Optimización")
-    print("="*60 + "\n")
-    
-    # Solicitar número de variables de decisión
-    print("📊 CONFIGURACIÓN DEL PROBLEMA")
-    print("-" * 40)
-    
-    num_vars = solicitar_entero("Ingrese el número de variables de decisión (x1, x2, ...): ")
-    
-    # Solicitar número de restricciones
-    num_restr = solicitar_entero("Ingrese el número de restricciones: ")
+    print("      PROYECTO MÉTODO SIMPLEX - INGRESO DE DATOS")
+    print("="*60)
 
-    # Preguntar si es maximización o minimización
-    es_maximizacion = solicitar_si_no("\n¿Es un problema de MAXIMIZACIÓN? (s/n): ")
-    tipo_problema = "Maximizar" if es_maximizacion else "Minimizar"
-    
-    print(f"\n✓ Configuración: {tipo_problema} con {num_vars} variables y {num_restr} restricciones\n")
-    
-    # Solicitar coeficientes de la función objetivo
-    print("🎯 FUNCIÓN OBJETIVO")
+    # 1. Definir la Función Objetivo
+    es_maximizacion = solicitar_si_no("¿El problema es de Maximización? (s/n): ")
+    if es_maximizacion:
+        print("Función Objetivo: MAXIMIZAR Z")
+    else:
+        print("Función Objetivo: MINIMIZAR Z")
+
+    # 2. Número de Variables
+    num_vars = solicitar_entero("Ingrese el número de variables (x1, x2, ...): ")
+    print(f"✅ {num_vars} variables definidas.")
+
+    # 3. Coeficientes de la Función Objetivo (c)
+    print("\n  COEFICIENTES DE LA FUNCIÓN OBJETIVO (c)")
     print("-" * 40)
-    print(f"Ingrese los coeficientes de la funcion objetivo Z = c1*x1 + c2*x2 + ... + c{num_vars}*x{num_vars}")
     c = solicitar_array(
-        f"Coeficientes (separados por espacios): ",
-        num_vars,
-        "función objetivo"
+        f"  Ingrese los {num_vars} coeficientes de Z (separados por espacio): ",
+        num_vars, "Z"
     )
-    
-    # Mostrar función objetivo ingresada
-    terminos = [f"{c[i]}x{i+1}" for i in range(num_vars)]
-    funcion_obj = " + ".join(terminos).replace("+ -", "- ")
-    print(f"   → {tipo_problema} Z = {funcion_obj}\n")
-    
-    # Inicializar matrices para restricciones
-    A = np.zeros((num_restr, num_vars))
-    b = np.zeros(num_restr)
-    constraints_types = []  # ✅ Inicializar acá
-    
-    # Solicitar restricciones
-    print("📋 RESTRICCIONES")
+    terminos_z = [f"{c[i]}x{i+1}" for i in range(num_vars)]
+    z_str = " + ".join(terminos_z).replace("+ -", "- ")
+    print(f"   → Z = {z_str}")
+
+    # 4. Número de Restricciones
+    num_restr = solicitar_entero("\nIngrese el número de restricciones: ")
+    print(f"✅ {num_restr} restricciones definidas.")
+
+    # Inicializar estructuras para restricciones
+    A = np.zeros((num_restr, num_vars), dtype=float)
+    b = np.zeros(num_restr, dtype=float)
+    constraints_types = []
+
+    # 5. Ingreso de Restricciones (Matriz A, Tipos, Vector b)
+    print("\n  DEFINICIÓN DE RESTRICCIONES (A*x tipo b)")
     print("-" * 40)
     for i in range(num_restr):
-        print(f"\nRestricción {i+1}:")
-        
-        # Coeficientes de A
-        A[i] = solicitar_array(
-            f"  Coeficientes (a{i+1}1 a{i+1}2 ... a{i+1}{num_vars}): ",
-            num_vars,
-            f"restricción {i+1}"
-        )
-        
+        print(f"\n  RESTRICCIÓN {i+1} de {num_restr}:")
+
+        # Coeficientes de la restricción (fila i de A)
+        print("  Ingrese los coeficientes (A) de la restricción, separados por espacio:")
+        A[i] = solicitar_array(f"    Coeficientes de x1 a x{num_vars}: ", num_vars, f"A[{i+1}]")
+
         # Tipo de restricción
-        tipo = solicitar_tipo_restriccion()
-        constraints_types.append(tipo)  # ✅ Guardar cada tipo
-        
-        # Eliminar si las linea comentadas a continuacion si no generan inconvenientes
-        #if tipo != '<=':
-        #    print("   ⚠️  Advertencia: Esta versión solo maneja restricciones <=")
-        #    print("      La restricción se tratará como <=")
-        
+        while True:
+            tipo = input("  Tipo de restricción ('<=', '>=' o '='): ").strip()
+            if tipo in ['<=', '>=', '=']:
+                constraints_types.append(tipo)
+                break
+            else:
+                print("❌ Error: Tipo de restricción inválido. Use '<=', '>=' o '='.")
+
+        # # Código original comentado: Solo permitía '<='
+        # # if tipo != '<=':
+        # #    print("   ⚠️  Advertencia: Esta versión solo maneja restricciones <=\")
+        # #    print("      La restricción se tratará como <=\")
+
         # Lado derecho (b)
         b[i] = solicitar_float(f"  Valor del lado derecho (b{i+1}): ")
-        
+
         # Mostrar restricción ingresada
         terminos_restr = [f"{A[i][j]}x{j+1}" for j in range(num_vars)]
         restriccion = " + ".join(terminos_restr).replace("+ -", "- ")
         print(f"   → {restriccion} {tipo} {b[i]}")  # ✅ Mostrar el tipo correcto
+
+    # =========================================================================
+    # 6. LÓGICA DE SELECCIÓN AUTOMÁTICA DEL MÉTODO (Opción 2)
+    # =========================================================================
+    # Criterio para SimplexSimple:
+    # 1. Debe ser Maximización.
+    # 2. Todas las restricciones deben ser de tipo '<='.
+    # 3. El vector b (lado derecho) debe ser no negativo (b >= 0).
+
+    # np.all(b >= -TOLERANCE) verifica si todos los b[i] son >= 0, 
+    # usando tolerancia para evitar errores de punto flotante.
+    is_simple_form = (
+        es_maximizacion and
+        all(t == '<=' for t in constraints_types) and
+        np.all(b >= -TOLERANCE)
+    )
+
+    if is_simple_form:
+        simplex = SimplexSimple()
+        print("\n⚙️ MÉTODO ELEGIDO: Simplex Simple (El problema está en forma estándar).")
+    else:
+        simplex = SimplexAdvanced()
+        print("\n⚙️ MÉTODO ELEGIDO: Simplex Avanzado (Minimización o uso de variables artificiales).")
     
     # Resolver el problema
     print("\n" + "="*60)
     print("  RESOLVIENDO...")
     print("="*60 + "\n")
-    
+
     try:
-        # simplex = SimplexSimple()
-        simplex = SimplexAdvanced()
-        solution, z = simplex.solve(c, A, b, constraints_types, es_maximizacion)
+        # Código original: (comentado)
+        # simplex = SimplexSimple() 
+        # simplex = SimplexAdvanced()
         
+        # El objeto 'simplex' ya está instanciado por la lógica de selección.
+        solution, z = simplex.solve(c, A, b, constraints_types, es_maximizacion)
+
         # Mostrar resultados
         print("✅ SOLUCIÓN ÓPTIMA ENCONTRADA")
         print("-" * 40)
         for i in range(num_vars):
             print(f"   x{i+1} = {solution[i]:.4f}")
-        
+
         print(f"\n🎯 Valor óptimo de Z = {z:.4f}")
-        print("="*60 + "\n")
-        
+
+    except ValueError as e:
+        print("\n❌ ERROR DE SOLUCIÓN")
+        print("-" * 40)
+        print(f"   {e}")
+        print("   No se pudo encontrar una solución o el problema es infactible/no acotado.")
     except Exception as e:
-        print(f"\n❌ ERROR al resolver el problema:")
-        print(f"   {str(e)}")
-        print("\nVerifique que:")
-        print("  • Las restricciones sean válidas")
-        print("  • Los valores ingresados sean correctos")
-        print("  • El problema tenga solución factible\n")
+        print("\n❌ ERROR INESPERADO")
+        print("-" * 40)
+        print(f"   Ocurrió un error durante la ejecución: {e}")
+
 
 if __name__ == "__main__":
+    # La solución de Simplex Advanced requiere un número mayor de iteraciones
+    # y la lógica interna es más robusta.
+    # Por ejemplo, SimplexAdvanced usa una lógica más compleja para Minimizacion.
+
+    # Establecer la configuración de impresión de numpy para una mejor visualización de números grandes
+    np.set_printoptions(precision=4, suppress=True) 
+
+    # Llamada a la función principal
     main()
